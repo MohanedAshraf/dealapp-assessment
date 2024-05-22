@@ -1,10 +1,49 @@
 const asyncHandler = require("../middlewares/async.js");
 const Ad = require("../models/Ad.js");
+const PropertyRequest = require("../models/PropertyRequest.js");
 
 module.exports = {
   // @desc      Create An Ad
   // @route     POST /api/v1/ads
   // @access    Private - (AGENT,ADMIN)
+  /**
+   * @swagger
+   * /api/v1/ads:
+   *   post:
+   *     summary: Create a new ad
+   *     tags: [Ads]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               propertyType:
+   *                 type: string
+   *                 enum: ['VILLA', 'HOUSE', 'LAND', 'APARTMENT']
+   *                 example: 'APARTMENT'
+   *               area:
+   *                 type: number
+   *                 example: 120
+   *               price:
+   *                 type: number
+   *                 example: 500000
+   *               city:
+   *                 type: string
+   *                 example: 'New York'
+   *               district:
+   *                 type: string
+   *                 example: 'Manhattan'
+   *               description:
+   *                 type: string
+   *                 example: 'Spacious apartment available'
+   *     responses:
+   *       201:
+   *         description: Created
+   *       400:
+   *         description: Bad Request
+   */
   create: asyncHandler(async (req, res, next) => {
     const { propertyType, area, price, city, district, description } = req.body;
     const ad = new Ad({
@@ -23,6 +62,56 @@ module.exports = {
   // @desc      Match An Ad with requests
   // @route     GET /api/v1/ads/:id/matches
   // @access    Private - (AGENT,ADMIN)
+  /**
+   * @swagger
+   * /api/v1/ads/{id}/matches:
+   *   get:
+   *     summary: Get matching property requests for an ad
+   *     tags: [Ads]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Ad ID
+   *       - in: query
+   *         name: page
+   *         schema:
+   *           type: integer
+   *           default: 1
+   *         description: Page number
+   *       - in: query
+   *         name: limit
+   *         schema:
+   *           type: integer
+   *           default: 10
+   *         description: Number of results per page
+   *     responses:
+   *       200:
+   *         description: Matching property requests
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                 page:
+   *                   type: integer
+   *                 limit:
+   *                   type: integer
+   *                 total:
+   *                   type: integer
+   *                 hasNextPage:
+   *                   type: boolean
+   *                 hasPreviousPage:
+   *                   type: boolean
+   *       401:
+   *         description: Unauthorized
+   */
   match: asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { page = 1, limit = 10 } = req.query;

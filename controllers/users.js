@@ -28,6 +28,41 @@ module.exports = {
   // @desc      Login user
   // @route     POST /api/v1/users/auth/login
   // @access    Public
+  /**
+   * @swagger
+   * /api/v1/users/auth/login:
+   *   post:
+   *     summary: Login user and get a token
+   *     tags: [Auth]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - phone
+   *               - password
+   *             properties:
+   *               phone:
+   *                 type: string
+   *                 example: '123-456-7890'
+   *               password:
+   *                 type: string
+   *                 example: 'yourpassword'
+   *     responses:
+   *       200:
+   *         description: Successfully logged in
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *       400:
+   *         description: Invalid phone or password
+   */
   login: asyncHandler(async (req, res, next) => {
     const { phone, password } = req.body;
 

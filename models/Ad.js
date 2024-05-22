@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const adSchema = new mongoose.Schema(
   {
     propertyType: {

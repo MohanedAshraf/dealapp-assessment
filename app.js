@@ -9,6 +9,7 @@ const hpp = require("hpp");
 // to color logs
 const colors = require("colors");
 const dotenv = require("dotenv");
+const { swaggerUi, swaggerDocs } = require("./swagger");
 
 // Load env vars
 dotenv.config();
@@ -26,6 +27,9 @@ const statistics = require("./routes/statistics.js");
 connectDB();
 
 const app = express();
+
+// Body parser
+app.use(express.json());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
@@ -56,6 +60,9 @@ app.use("/api/v1/users", users);
 app.use("/api/v1/property-requests", propertyRequests);
 app.use("/api/v1/ads", ads);
 app.use("/api/v1/stats", statistics);
+
+// Swagger setup
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(errorHandler);
 
