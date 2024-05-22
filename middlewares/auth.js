@@ -44,6 +44,7 @@ const protect = asyncHandler(async (req, res, next) => {
 // Grant access to specific roles
 const authorize = (...roles) => {
   return (req, res, next) => {
+    roles.push("ADMIN");
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorResponse(

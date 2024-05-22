@@ -18,6 +18,8 @@ const connectDB = require("./config/db.js");
 
 // Route files
 const users = require("./routes/users.js");
+const propertyRequests = require("./routes/propertyRequests.js");
+const ads = require("./routes/ads.js");
 
 // Connect to database
 connectDB();
@@ -50,6 +52,8 @@ app.use(hpp());
 
 // Mount routers
 app.use("/api/v1/users", users);
+app.use("/api/v1/property-requests", propertyRequests);
+app.use("/api/v1/ads", ads);
 
 app.use(errorHandler);
 
@@ -61,10 +65,3 @@ app.listen(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
   )
 );
-
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (err, promise) => {
-  console.log(`Error: ${err.message}`.red);
-  // Close server & exit process
-  // server.close(() => process.exit(1));
-});
