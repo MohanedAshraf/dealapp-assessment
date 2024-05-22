@@ -24,4 +24,34 @@ const sendTokenResponse = (user, statusCode, res) => {
   });
 };
 
-module.exports = {};
+module.exports = {
+  // @desc      Login user
+  // @route     POST /api/v1/users/auth/login
+  // @access    Public
+  login: asyncHandler(async (req, res, next) => {
+    const { phone, password } = req.body;
+
+    // Validate emil & password
+    if (!phone || !password) {
+      return next(
+        new ErrorResponse("Please provide phone number and password", 400)
+      );
+    }
+
+    // Check for user
+    const user = await User.findOne({ phone }).select("password");
+
+    if (!user) {
+      return next(new ErrorResponse("Invalid credentials", 401));
+    }
+
+    // Check if password matches
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      return next(new ErrorResponse("Invalid credentials", 401));
+    }
+
+    sendTokenResponse(user, 200, res);
+  }),
+};
