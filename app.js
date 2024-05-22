@@ -20,6 +20,7 @@ const connectDB = require("./config/db.js");
 const users = require("./routes/users.js");
 const propertyRequests = require("./routes/propertyRequests.js");
 const ads = require("./routes/ads.js");
+const statistics = require("./routes/statistics.js");
 
 // Connect to database
 connectDB();
@@ -54,6 +55,7 @@ app.use(hpp());
 app.use("/api/v1/users", users);
 app.use("/api/v1/property-requests", propertyRequests);
 app.use("/api/v1/ads", ads);
+app.use("/api/v1/stats", statistics);
 
 app.use(errorHandler);
 

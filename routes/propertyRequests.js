@@ -5,7 +5,7 @@ const { protect, authorize } = require("../middlewares/auth.js");
 
 const router = express.Router({ mergeParams: true });
 router
-  .route("/property-requests")
+  .route("/")
   .post(protect, authorize("CLIENT"), propertyRequests.create)
   .put(protect, authorize("CLIENT"), propertyRequests.update);
 
