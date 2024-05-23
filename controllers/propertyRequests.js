@@ -1,3 +1,4 @@
+const { check, validationResult } = require("express-validator");
 const asyncHandler = require("../middlewares/async.js");
 const PropertyRequest = require("../models/PropertyRequest.js");
 
@@ -43,20 +44,37 @@ module.exports = {
    *       400:
    *         description: Bad Request
    */
-  create: asyncHandler(async (req, res, next) => {
-    const { propertyType, area, price, city, district, description } = req.body;
-    const propertyRequest = new PropertyRequest({
-      propertyType,
-      area,
-      price,
-      city,
-      district,
-      description,
-      user: req.user._id,
-    });
-    await propertyRequest.save();
-    res.status(201).json(propertyRequest);
-  }),
+  create: [
+    // Validation middleware
+    [
+      check("propertyType").isIn(["VILLA", "HOUSE", "LAND", "APARTMENT"]),
+      check("area").isNumeric(),
+      check("price").isNumeric(),
+      check("city").isString(),
+      check("district").isString(),
+      check("description").isString(),
+    ],
+    asyncHandler(async (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { propertyType, area, price, city, district, description } =
+        req.body;
+      const propertyRequest = new PropertyRequest({
+        propertyType,
+        area,
+        price,
+        city,
+        district,
+        description,
+        user: req.user._id,
+      });
+      await propertyRequest.save();
+      res.status(201).json(propertyRequest);
+    }),
+  ],
 
   // @desc      Update A Property Request
   // @route     PUT /api/v1/property-requests/{id}
@@ -95,14 +113,27 @@ module.exports = {
    *       404:
    *         description: Not Found
    */
-  update: asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-    const { description, area, price } = req.body;
-    const propertyRequest = await PropertyRequest.findByIdAndUpdate(
-      id,
-      { description, area, price, refreshedAt: Date.now() },
-      { new: true }
-    );
-    res.status(200).json(propertyRequest);
-  }),
+  update: [
+    // Validation middleware
+    [
+      check("description").optional().isString(),
+      check("area").optional().isNumeric(),
+      check("price").optional().isNumeric(),
+    ],
+    asyncHandler(async (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+      const { description, area, price } = req.body;
+      const propertyRequest = await PropertyRequest.findByIdAndUpdate(
+        id,
+        { description, area, price, refreshedAt: Date.now() },
+        { new: true }
+      );
+      res.status(200).json(propertyRequest);
+    }),
+  ],
 };

@@ -1,3 +1,4 @@
+const { check, validationResult } = require("express-validator");
 const ErrorResponse = require("../utils/errorResponse.js");
 const asyncHandler = require("../middlewares/async.js");
 const User = require("../models/User.js");
@@ -63,30 +64,39 @@ module.exports = {
    *       400:
    *         description: Invalid phone or password
    */
-  login: asyncHandler(async (req, res, next) => {
-    const { phone, password } = req.body;
+  login: [
+    // Validation middleware
+    [check("phone").isString(), check("password").isString()],
+    asyncHandler(async (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-    // Validate emil & password
-    if (!phone || !password) {
-      return next(
-        new ErrorResponse("Please provide phone number and password", 400)
-      );
-    }
+      const { phone, password } = req.body;
 
-    // Check for user
-    const user = await User.findOne({ phone }).select("password");
+      // Validate phone & password
+      if (!phone || !password) {
+        return next(
+          new ErrorResponse("Please provide phone number and password", 400)
+        );
+      }
 
-    if (!user) {
-      return next(new ErrorResponse("Invalid credentials", 401));
-    }
+      // Check for user
+      const user = await User.findOne({ phone }).select("password");
 
-    // Check if password matches
-    const isMatch = await user.matchPassword(password);
+      if (!user) {
+        return next(new ErrorResponse("Invalid credentials", 401));
+      }
 
-    if (!isMatch) {
-      return next(new ErrorResponse("Invalid credentials", 401));
-    }
+      // Check if password matches
+      const isMatch = await user.matchPassword(password);
 
-    sendTokenResponse(user, 200, res);
-  }),
+      if (!isMatch) {
+        return next(new ErrorResponse("Invalid credentials", 401));
+      }
+
+      sendTokenResponse(user, 200, res);
+    }),
+  ],
 };

@@ -1,3 +1,4 @@
+const { check, validationResult } = require("express-validator");
 const asyncHandler = require("../middlewares/async.js");
 const Ad = require("../models/Ad.js");
 const PropertyRequest = require("../models/PropertyRequest.js");
@@ -44,20 +45,37 @@ module.exports = {
    *       400:
    *         description: Bad Request
    */
-  create: asyncHandler(async (req, res, next) => {
-    const { propertyType, area, price, city, district, description } = req.body;
-    const ad = new Ad({
-      propertyType,
-      area,
-      price,
-      city,
-      district,
-      description,
-      user: req.user._id,
-    });
-    await ad.save();
-    res.status(201).json(ad);
-  }),
+  create: [
+    // Validation middleware
+    [
+      check("propertyType").isIn(["VILLA", "HOUSE", "LAND", "APARTMENT"]),
+      check("area").isNumeric(),
+      check("price").isNumeric(),
+      check("city").isString(),
+      check("district").isString(),
+      check("description").isString(),
+    ],
+    asyncHandler(async (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { propertyType, area, price, city, district, description } =
+        req.body;
+      const ad = new Ad({
+        propertyType,
+        area,
+        price,
+        city,
+        district,
+        description,
+        user: req.user._id,
+      });
+      await ad.save();
+      res.status(201).json(ad);
+    }),
+  ],
 
   // @desc      Match An Ad with requests
   // @route     GET /api/v1/ads/:id/matches
