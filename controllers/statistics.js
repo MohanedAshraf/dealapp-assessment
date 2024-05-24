@@ -125,8 +125,8 @@ module.exports = {
 
     res.json({
       data,
-      page,
-      limit,
+      page: Number(page),
+      limit: Number(limit),
       total,
       hasNextPage: page * limit < total,
       hasPreviousPage: page > 1,

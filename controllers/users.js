@@ -59,6 +59,8 @@ module.exports = {
    *             schema:
    *               type: object
    *               properties:
+   *                 sucess:
+   *                   type: boolean
    *                 token:
    *                   type: string
    *       400:
@@ -74,13 +76,6 @@ module.exports = {
       }
 
       const { phone, password } = req.body;
-
-      // Validate phone & password
-      if (!phone || !password) {
-        return next(
-          new ErrorResponse("Please provide phone number and password", 400)
-        );
-      }
 
       // Check for user
       const user = await User.findOne({ phone }).select("password");

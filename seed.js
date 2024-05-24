@@ -18,46 +18,25 @@ const createUsers = async () => {
 
   const users = [
     {
-      name: "Admin1",
-      phone: "111-111-1111",
-      role: "ADMIN",
+      name: "Agent",
+      phone: "11-111-1111",
       password: hashedPassword,
-    },
-    {
-      name: "Admin2",
-      phone: "222-222-2222",
-      role: "ADMIN",
-      password: hashedPassword,
-    },
-    {
-      name: "Agent1",
-      phone: "333-333-3333",
       role: "AGENT",
-      password: hashedPassword,
+      status: "ACTIVE",
     },
     {
-      name: "Agent2",
-      phone: "444-444-4444",
-      role: "AGENT",
+      name: "Client",
+      phone: "22-222-2222",
       password: hashedPassword,
-    },
-    {
-      name: "Agent3",
-      phone: "555-555-5555",
-      role: "AGENT",
-      password: hashedPassword,
-    },
-    {
-      name: "Client1",
-      phone: "666-666-6666",
       role: "CLIENT",
-      password: hashedPassword,
+      status: "ACTIVE",
     },
     {
-      name: "Client2",
-      phone: "777-777-7777",
-      role: "CLIENT",
+      name: "Admin",
+      phone: "33-333-3333",
       password: hashedPassword,
+      role: "ADMIN",
+      status: "ACTIVE",
     },
   ];
 
@@ -67,18 +46,41 @@ const createUsers = async () => {
 
 const createRequests = async () => {
   const clients = await User.find({ role: "CLIENT" });
-  const types = ["VILLA", "HOUSE", "LAND", "APARTMENT"];
 
   const requests = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     requests.push({
-      propertyType: types[i % 4],
-      area: 100 + i * 10,
-      price: 100000 + i * 100000,
+      propertyType: "HOUSE",
+      area: 130,
+      price: i % 0 ? 30000 : 29990,
       city: "City" + i,
-      district: "District" + i,
+      district: "District1",
       description: `Description for request ${i}`,
-      user: clients[i % clients.length]._id,
+      user: clients[0]._id,
+    });
+  }
+
+  for (let i = 0; i < 31; i++) {
+    requests.push({
+      propertyType: "VILLA",
+      area: 140,
+      price: i % 0 ? 40000 : 39990,
+      city: "City" + i,
+      district: "District2",
+      description: `Description for request ${i}`,
+      user: clients[0]._id,
+    });
+  }
+  //not relvant data
+  for (let i = 0; i < 31; i++) {
+    requests.push({
+      propertyType: "LAND",
+      area: 220,
+      price: 50000,
+      city: "City" + i,
+      district: "District2",
+      description: `Description for request ${i}`,
+      user: clients[0]._id,
     });
   }
 
@@ -88,23 +90,22 @@ const createRequests = async () => {
 
 const createAds = async () => {
   const agents = await User.find({ role: "AGENT" });
-
   const ads = [
     {
       propertyType: "HOUSE",
-      area: 150,
-      price: 300010,
+      area: 130,
+      price: 30000,
       city: "CityA",
-      district: "DistrictA",
+      district: "District1",
       description: "Description for ad 1",
       user: agents[0]._id,
     },
     {
-      propertyType: "HOUSE",
-      area: 150,
-      price: 300010,
+      propertyType: "VILLA",
+      area: 140,
+      price: 40000,
       city: "CityB",
-      district: "DistrictB",
+      district: "District2",
       description: "Description for ad 1",
       user: agents[0]._id,
     },
@@ -113,9 +114,9 @@ const createAds = async () => {
       area: 200,
       price: 499990,
       city: "CityB",
-      district: "DistrictB",
+      district: "District3",
       description: "Description for ad 2",
-      user: agents[1]._id,
+      user: agents[0]._id,
     },
   ];
 
