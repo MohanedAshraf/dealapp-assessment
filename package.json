@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha  --timeout 50000 'test/**/*.test.js'",
     "start": "node app.js",
     "dev": "nodemon app.js",
     "seed": "node seed.js"
@@ -27,5 +27,13 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "chai-http": "^4.4.0",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.2",
+    "sinon": "^5.0.0",
+    "sinon-mongoose": "^2.1.0",
+    "supertest": "^4.0.0"
   }
 }

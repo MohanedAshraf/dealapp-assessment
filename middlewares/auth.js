@@ -4,9 +4,8 @@ const ErrorResponse = require("../utils/errorResponse.js");
 const User = require("../models/User.js");
 
 // Protect routes
-const protect = asyncHandler(async (req, res, next) => {
+exports.protect = asyncHandler(async (req, res, next) => {
   let token;
-
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -14,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
     // Set token from Bearer token in header
     token = req.headers.authorization.split(" ")[1];
     // Set token from cookie
-  } else if (req.cookies.token) {
+  } else if (req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }
 
@@ -42,7 +41,7 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 // Grant access to specific roles
-const authorize = (...roles) => {
+exports.authorize = (...roles) => {
   return (req, res, next) => {
     roles.push("ADMIN");
     if (!roles.includes(req.user.role)) {
@@ -56,5 +55,3 @@ const authorize = (...roles) => {
     next();
   };
 };
-
-module.exports = { protect, authorize };
