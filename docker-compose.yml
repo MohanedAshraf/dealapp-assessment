@@ -14,7 +14,7 @@ services:
     build: .
     environment:
       NODE_ENV: ${NODE_ENV}
-      MONGO_URI: ${DOCKER_MONGO_URI}
+      MONGO_URI: mongodb://mongo:27017/DealApp
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRE: ${JWT_EXPIRE}
       JWT_COOKIE_EXPIRE: ${JWT_COOKIE_EXPIRE}
